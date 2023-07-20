@@ -2,25 +2,21 @@ import db from "../mysql.js";
 
 const allShoesQueries = {};
 
-allShoesQueries.addAllShoes = async (collectionData) => {
+allShoesQueries.addAllShoes = async (data) => {
   let conn = null;
   try {
     conn = await db.createConnection();
 
-    let collectionObj = {
-      collectionName: collectionData.collectionName,
-      collectionType: collectionData.collectionType,
-      initialDate: collectionData.initialDate,
-      finishDate: collectionData.finishDate,
-      userCreated: collectionData.userCreated,
+    let obj = {
+      brand: data.brand,
+      reference: data.reference,
+      description: data.description,
+      link: data.link,
+      color: data.color,
+      isDeleted: data.isDeleted || false,
     };
 
-    return await db.query(
-      "INSERT INTO collection SET ?",
-      [collectionObj],
-      "insert",
-      conn
-    );
+    return await db.query("INSERT INTO allshoes SET ?", [obj], "insert", conn);
   } catch (e) {
     throw new Error(e);
   } finally {
@@ -33,7 +29,7 @@ allShoesQueries.getAllShoesById = async (id) => {
   try {
     conn = await db.createConnection();
     return await db.query(
-      "SELECT * FROM collection WHERE id = ?",
+      "SELECT * FROM allshoes WHERE id = ?",
       id,
       "select",
       conn
@@ -45,13 +41,30 @@ allShoesQueries.getAllShoesById = async (id) => {
   }
 };
 
-allShoesQueries.getAllShoes = async (userId) => {
+allShoesQueries.getAllShoesByReference = async (reference) => {
   let conn = null;
   try {
     conn = await db.createConnection();
     return await db.query(
-      "SELECT * FROM collection where userCreated = ? and isDelete = 0 ",
-      userId,
+      "SELECT * FROM allshoes WHERE reference = ?",
+      reference,
+      "select",
+      conn
+    );
+  } catch (e) {
+    throw new Error(e);
+  } finally {
+    conn && (await conn.end());
+  }
+};
+
+allShoesQueries.getAllShoes = async () => {
+  let conn = null;
+  try {
+    conn = await db.createConnection();
+    return await db.query(
+      "SELECT * FROM allshoes where isDeleted = 0 ",
+      [],
       "select",
       conn
     );
