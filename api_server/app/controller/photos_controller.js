@@ -8,27 +8,23 @@ const controller = {};
 controller.uploadImage = async (req, res) => {
   try {
     if (req.files === null) return;
-    if (!req.files || Object.keys(req.files).length === 0) {
+    console.log(req.files);
+    if (!req.files) {
       return res.status(400).send("No se ha cargado ningún archivo");
     }
 
-    if (!req.query) return res.status(400).send("Sin id del zapato");
-    const images = !req.files.imagen.length
-      ? [req.files.imagen]
-      : req.files.imagen;
+    const images = !req.files.file.length ? [req.files.file] : req.files.file;
 
-    images.forEach(async (image) => {
-      let uploadPath = __dirname + "/app/public/images/" + photo.name;
-      let BBDDPath = "images/" + photo.name;
-      image.mv(uploadPath, (err) => {
-        if (err) return res.status(500).send(err);
-      });
+    for await (const image of images) {
+      let uploadPath = __dirname + "/public/images/" + image.name;
+      let BBDDPath = "images/" + image.name;
+      await image.mv(uploadPath);
       await dao.addImage({
-        photoname: photo.name,
+        allshoes_reference: req.query.allshoes_reference,
+        photoname: image.name,
         path: BBDDPath,
-        allshoes: req.query.id,
       });
-    });
+    }
 
     return res.send("Imagen subida!");
   } catch (e) {
@@ -60,13 +56,13 @@ controller.getAllShoesPhotos = async (req, res) => {
   }
 };
 
-controller.getAllShoesSintlePhoto = async (req, res) => {
+controller.getAllShoesSinglePhoto = async (req, res) => {
   try {
-    const photo = await dao.getAllShoesById(req.params.id);
+    const photo = await dao.getAllShoesByReference(req.params.reference);
     if (photo.length <= 0) return res.status(404).send("No existe la foto");
-    [photo.id] = photo;
+    [photo.reference] = photo;
 
-    const photoSingle = await dao.getAllShoesSinglePhoto(photo[0].id);
+    const photoSingle = await dao.getAllShoesSinglePhoto(photo[0].reference);
 
     return res.send(photoSingle[0]);
   } catch (e) {

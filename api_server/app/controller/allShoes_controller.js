@@ -3,11 +3,11 @@ import dao from "../services/dao.js";
 const controller = {};
 
 controller.addAllShoes = async (req, res) => {
-  const { brand, reference, description, link, color } = req.body;
+  const { brand, reference, description, color } = req.body;
 
   console.log(req.body);
 
-  if (!brand || !reference || !description || !link || !color)
+  if (!brand || !reference || !description || !color)
     return res.status(400).send("Error al recibir el body");
 
   try {

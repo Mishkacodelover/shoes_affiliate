@@ -8,7 +8,7 @@ photosQueries.addImage = async (imageData) => {
     conn = await db.createConnection();
 
     let imageObj = {
-      allshoes: imageData.allshoes,
+      allshoes_reference: imageData.allshoes_reference,
       photoname: imageData.photoname,
       path: imageData.path,
       isDeleted: imageData.isDeleted || false,
@@ -44,7 +44,7 @@ photosQueries.getAllShoesImages = async () => {
   try {
     conn = await db.createConnection();
     return await db.query(
-      "SELECT allshoes.id as shoesId, allshoes.reference,allshoes.description,allshoes.description,allshoes.link,photos.id as photoId,photos,photo.path FROM shoes.allshoes JOIN shoes.photos on allshoes.id= photos.id",
+      "SELECT allshoes.id as shoesId, allshoes.brand,allshoes.reference,allshoes.description,allshoes.link,allshoes.color,photos.id as photoId,photos.allshoes_reference,photos.photoname,photos.path FROM shoes.allshoes JOIN shoes.photos on allshoes.reference= photos.allshoes_reference",
       [],
       "select",
       conn
@@ -56,13 +56,13 @@ photosQueries.getAllShoesImages = async () => {
   }
 };
 
-photosQueries.getAllShoesSingleImage = async (shoe) => {
+photosQueries.getAllShoesSingleImage = async (reference) => {
   let conn = null;
   try {
     conn = await db.createConnection();
     return await db.query(
-      "SELECT allshoes.id as shoesId, allshoes.reference,allshoes.description,allshoes.description,allshoes.link,photos.id as photoId,photos,photo.path FROM shoes.allshoes JOIN shoes.photos on allshoes.id= photos.id where allshoes.id = ? ",
-      shoe,
+      "SELECT allshoes.id as shoesId, allshoes.brand,allshoes.reference,allshoes.description,allshoes.link,allshoes.color,photos.id as photoId,photos.allshoes_reference,photos.photoname,photos.path FROM shoes.allshoes JOIN shoes.photos on allshoes.reference= photos.allshoes_reference where allshoes_reference = ? ",
+      reference,
       "select",
       conn
     );

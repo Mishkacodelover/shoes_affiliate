@@ -21,15 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(express.text());
 app.use(cors());
-app.use(
-  fileUpload({
-    createParentPath: true,
-    limits: { fileSize: 20 * 1024 * 1024 },
-    abortOnLimit: true,
-    responseOnLimit: "Imagen demasiado grande",
-    uploadTimeout: 0,
-  })
-);
+app.use(fileUpload());
 
 app.use(express.static(join(__dirname, "public")));
 

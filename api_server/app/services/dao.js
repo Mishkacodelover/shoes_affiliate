@@ -16,7 +16,7 @@ dao.getImageById = async (id) => await photosQueries.getImageById(id);
 
 dao.getAllShoesPhotos = async () => await photosQueries.getAllShoesImages();
 
-dao.getAllShoesSinglePhoto = async (shoe) =>
-  await photosQueries.getAllShoesSingleImage(shoe);
+dao.getAllShoesSinglePhoto = async (reference) =>
+  await photosQueries.getAllShoesSingleImage(reference);
 
 export default dao;
